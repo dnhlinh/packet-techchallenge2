@@ -81,8 +81,10 @@ while option!=0:
         
         elif option == 2:
                 # GET REQUEST
-                r = request.get(URL, headers=headers, params=params)
-                data = r.json()
+                resp = request.get(URL, headers=headers, params=params)
+                data = json.loads(resp)
+                print(json.dumps(data, indent=2))
+                
         
         elif option == 3:
                 
@@ -93,13 +95,14 @@ while option!=0:
                 }
                 deviceIDs = manager.list_devices(project_id='ca73364c-6023-4935-9137-2132e73c20b4', params = page_params)
                 
-                # PRINT DEVICE ID AND INFORMATION
+                # PRINT DEVICE ID WITH INFORMATION
                 device_order = 1
                 for deviceID in deviceIDs:
                         print("#" + device_order)
                         print(deviceID)
                         r_device = request.get(URL, headers=headers, params=deviceID)
-                        device_info = r_device.json()
+                        device_info = json.loads(r_device)
+                        print(device_info)
                         device_order = device_order + 1
                 
                 del_order = int(input("Enter device # you want to delete: "))
@@ -108,8 +111,9 @@ while option!=0:
                 n=1
                 for deviceID in deviceIDs:
                         if n == del_order:
-                                device = manager.get_device(device_id)
+                                device = manager.get_device(deviceID)
                                 device.delete()
+                                print("Device Deleted")
                                 '''
                                 # 2nd way with delete request:
                                 r = request.delete(URL, headers=headers, params=deviceID)
