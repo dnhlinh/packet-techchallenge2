@@ -1,0 +1,121 @@
+import requests
+import json
+import packet
+
+print("PACKET TECH CHALLENGE")
+
+URL = 'https://api.packet.net'
+headers = {
+        "X-Auth-Token": "yBnPckWvzktJCr8C3pcrcuANHmwBihcE",
+}
+
+params = {
+        "project_id": "ca73364c-6023-4935-9137-2132e73c20b4",
+}
+
+manager = packet.Manager(auth_token="yBnPckWvzktJCr8C3pcrcuANHmwBihcE")
+
+print("1. Create a Device; 2. Get your device; 3. Delete your device")
+option = int(input("Enter your option or 0 to quit:"))
+
+while option!=0:
+        if option == 1: 
+                
+                # Verify plan for the device
+                print("LIST OF PLANS AVAILABLE")
+                plans = manager.list_plans()
+                for plan in plans:
+                        print(facility)
+                plan_str = raw_input("Enter a plan for your device: ")
+                
+                while plan_str not in plans:
+                        print("Unverified plan")
+                        plan_str = raw_input("Re-enter:")
+                if plan_str in plans:
+                        print("Plan Verified")
+                        
+                # Verify Facility for the device
+                
+                print("LIST OF FACILITIES AVAILABLE")
+                
+                facilities = manager.list_facilities()
+                for facility in facilities:
+                        print(facility)
+        
+                facility_str = raw_input("Enter a facility for your device: ")
+                
+                while facility_str not in facilities:
+                        print("Unverified facility")
+                        plan_str = raw_input("Re-enter:")
+                if facility_str in facilities:
+                        print("Facility Verified")  
+                        
+                # Verify Operating System
+                print("LIST OF OPERATING SYSTEMS AVAILABLE")
+                operating_systems = manager.list_operating_systems()
+                for os in operating_systems:
+                        print(os)
+                os_str = raw_input("Enter an operating system for your device: ")
+                while os_tr not in operating_systems:
+                        print("Unverified operating system")
+                        os_str = raw_input("Re-enter:")
+                if os_str in operating_systems:
+                        print("Operating System Verified")
+                
+                # HOST NAME        
+                hostname_str = raw_input("Enter host name for your device: ")
+                
+                # DEVICE INFO AFTER VERIFICATION
+                device = {
+                        "plan": plan_str, 
+                        "facility": facility_str, 
+                        "operating_system": os_str,
+                        "host_name": hostname_str,
+                }
+                
+                # POST REQUEST
+                response = request.post(URL, headers=headers, params=params, data=json.dumps(device))
+                response.raise_for_status()
+                return reponse.json()
+        
+        elif option == 2:
+                # GET REQUEST
+                r = request.get(URL, headers=headers, params=params)
+                data = r.json()
+        
+        elif option == 3:
+                
+                # DEVICE ID LIST
+                n = int(input("Enter the number of devices to display per page:"))
+                page_params = {
+                        'per_page': n
+                }
+                deviceIDs = manager.list_devices(project_id='ca73364c-6023-4935-9137-2132e73c20b4', params = page_params)
+                
+                # PRINT DEVICE ID AND INFORMATION
+                device_order = 1
+                for deviceID in deviceIDs:
+                        print("#" + device_order)
+                        print(deviceID)
+                        r_device = request.get(URL, headers=headers, params=deviceID)
+                        device_info = r_device.json()
+                        device_order = device_order + 1
+                
+                del_order = int(input("Enter device # you want to delete: "))
+                
+                #DELETE DEVICE
+                n=1
+                for deviceID in deviceIDs:
+                        if n == del_order:
+                                device = manager.get_device(device_id)
+                                device.delete()
+                                '''
+                                # 2nd way with delete request:
+                                r = request.delete(URL, headers=headers, params=deviceID)
+                                '''
+                                print("Device was successully deleted")
+                        else:
+                                pass
+                        n = n+1
+                
+        option = int(input("Enter your option or 0 to quit:"))
