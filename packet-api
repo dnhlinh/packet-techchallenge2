@@ -7,7 +7,7 @@ print("PACKET TECH CHALLENGE")
 
 URL = 'https://api.packet.net'
 headers = {
-        "X-Auth-Token": "yBnPckWvzktJCr8C3pcrcuANHmwBihcE",
+        "X-Auth-Token": "",
 }
 
 params = {
